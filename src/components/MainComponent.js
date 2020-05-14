@@ -11,12 +11,12 @@ import {connect} from 'react-redux';
 
 
 const mapStateToProps = state => {
-    return{
-      dishes : state.dishes,
-      comments : state.comments,
-      promotions: state.promotions,
-      leaders: state.leaders
-    }
+  return{
+    dishes : state.dishes,
+    comments : state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  }
 }
 
 
@@ -49,9 +49,6 @@ class Main extends Component {
     return (
       <div>
         <Header />
-        {/* <Menu dishes={this.state.dishes} 
-          onClick={(dishId) => this.onDishSelect(dishId)} />
-        <DishDetail dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0]} /> */}
 
         <Switch>
           <Route path="/home" component={HomePage} />
