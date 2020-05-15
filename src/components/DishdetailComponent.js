@@ -10,46 +10,46 @@ import {Link} from 'react-router-dom';
 // jogesh sir dish detail component
 
 
-    function RenderDish({dish}){
+  function RenderDish({dish}){
+    return(
+      <div className="col-12 col-md-5 m-1">
+        <Card>
+          <CardImg top src={dish.image} alt={dish.name} width="100%" />
+          <CardBody>
+            <CardTitle>{dish.name}</CardTitle>
+            <CardText>{dish.description}</CardText>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
+
+  function RenderComments({comments, addComment, dishId}) {
+    if (comments != null){
         return(
             <div className="col-12 col-md-5 m-1">
-                <Card>
-                    <CardImg top src={dish.image} alt={dish.name} width="100%" />
-                    <CardBody>
-                        <CardTitle>{dish.name}</CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
-                </Card>
+                <h4>Comments</h4>
+                <ul className="list-unstyled">
+                    {comments.map((comment) => {
+                        return(
+                            <li key={comment.id}>
+                                <p>{comment.comment}</p>
+                                <p>-- {comment.author} ,  {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                            </li>
+                        );
+                    })}
+                </ul>
+                <CommentForm dishId={dishId} addComment={addComment}></CommentForm>
             </div>
         );
     }
 
-    function RenderComments({comments}) {
-        if (comments != null){
-            return(
-                <div className="col-12 col-md-5 m-1">
-                    <h4>Comments</h4>
-                    <ul className="list-unstyled">
-                        {comments.map((comment) => {
-                            return(
-                                <li key={comment.id}>
-                                    <p>{comment.comment}</p>
-                                    <p>-- {comment.author} ,  {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <CommentForm></CommentForm>
-                </div>
-            );
-        }
-
-        else{
-            return(
-                <div></div>
-            )
-        }
+    else{
+        return(
+            <div></div>
+        )
     }
+  }
 
     const DishDetail = (props) => {
         if (props.dish != null){
@@ -68,7 +68,10 @@ import {Link} from 'react-router-dom';
 
                     <div className="row">
                         <RenderDish dish={props.dish} />
-                        <RenderComments comments={props.comments} />
+                        <RenderComments comments={props.comments}
+                          addComment={props.addComment}
+                          dishId={props.dish.id}
+                        />
                     </div>
                 </div>
             );
@@ -102,8 +105,10 @@ class CommentForm extends Component{
     }
 
     submitComment(values) {
-        console.log("Curreny State is: " + JSON.stringify(values));
-        alert("Current State is: " + JSON.stringify(values))
+        // console.log("Curreny State is: " + JSON.stringify(values));
+        // alert("Current State is: " + JSON.stringify(values))
+        this.toggleModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
@@ -136,14 +141,14 @@ class CommentForm extends Component{
                     </Col>
                   </Row>
                   <Row className="form-group">
-                    <Label htmlFor="name" md={12}>
+                    <Label htmlFor="author" md={12}>
                       Your Name
                     </Label>
                     <Col md={12}>
                       <Control.text
-                        model=".name"
-                        id="name"
-                        name="name"
+                        model=".author"
+                        id="author"
+                        name="author"
                         placeholder="Your Name"
                         className="form-control"
                         validators={{
@@ -154,7 +159,7 @@ class CommentForm extends Component{
                       />
                       <Errors
                         className="text-danger"
-                        model=".name"
+                        model=".author"
                         show="touched"
                         messages={{
                           required: "Required ",
